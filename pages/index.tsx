@@ -4,6 +4,12 @@ import Image from "next/image";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import { v4 as uuidv4 } from "uuid";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
 import styles from "@/styles/Home.module.css";
 
 export default function Home() {
@@ -42,7 +48,12 @@ export default function Home() {
       setAnimation(true);
       Cookies.set(
         "darkMode",
-        CryptoJS.AES.encrypt(darkMode.toString(), secretKey).toString()
+        CryptoJS.AES.encrypt(darkMode.toString(), secretKey).toString(),
+        {
+          expires: 365,
+          SameSite: "None",
+          secure: true,
+        }
       );
     } else {
       mounted.current = true;
@@ -77,6 +88,14 @@ export default function Home() {
   const handleDelete = (uid: string) => {
     setTodoList(todoList.filter((task) => task.uid !== uid));
   };
+
+  function handleDragEnd(result: DropResult) {
+    if (!result.destination) return;
+    const items = Array.from(todoList);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setTodoList(items);
+  }
 
   return (
     <>
@@ -123,25 +142,44 @@ export default function Home() {
               }}
             />
           </div>
+
           <div className={styles.tasks}>
-            {todoList
-              .filter((task) => {
-                if (filter === 1) return true;
-                if (filter === 2) return task.completed === false;
-                if (filter === 3) return task.completed === true;
-              })
-              .map((task) => {
-                return (
-                  <div key={task.uid} className={styles.task}>
-                    <span
-                      onClick={() => handleComplete(task.uid)}
-                      className={task.completed ? styles.completed : undefined}
-                    ></span>
-                    <span>{task.task}</span>
-                    <span onClick={() => handleDelete(task.uid)}></span>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="tasks">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {todoList
+                      .filter((task) => {
+                        if (filter === 1) return true;
+                        if (filter === 2) return task.completed === false;
+                        if (filter === 3) return task.completed === true;
+                      })
+                      .map(({ task, uid, completed }, index) => (
+                        <Draggable key={uid} draggableId={uid} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              className={styles.task}
+                              {...provided.dragHandleProps}
+                              {...provided.draggableProps}
+                              ref={provided.innerRef}
+                            >
+                              <span
+                                onClick={() => handleComplete(uid)}
+                                className={
+                                  completed ? styles.completed : undefined
+                                }
+                              ></span>
+                              <span>{task}</span>
+                              <span onClick={() => handleDelete(uid)}></span>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                    {provided.placeholder}
                   </div>
-                );
-              })}
+                )}
+              </Droppable>
+            </DragDropContext>
             <div className={styles.toolbar}>
               <span className={styles.firstButton}>
                 {todoList.filter((task) => task.completed === false).length}{" "}
