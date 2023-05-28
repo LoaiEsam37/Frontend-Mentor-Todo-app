@@ -118,8 +118,8 @@ export default function Home() {
               onKeyDown={handleKeyPress}
               ref={inputRef}
               onChange={(e) => {
-                if (e.target.value.length > 55)
-                  e.target.value = e.target.value.slice(0, 55);
+                if (e.target.value.length > 47)
+                  e.target.value = e.target.value.slice(0, 47);
               }}
             />
           </div>

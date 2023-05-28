@@ -28,6 +28,17 @@
   filter: blur(3px);
 }
 
+.main::after {
+  content: "Drag and Drop to reorder";
+  width: max-content;
+  height: max-content;
+  position: absolute;
+  left: 50%;
+  top: 570px;
+  transform: translateX(-50%);
+  color: #919096;
+}
+
 .main.visible::before {
   filter: blur(0);
 }
@@ -45,6 +56,7 @@
   opacity: 0;
   transform: translateY(-10%);
   transition: 2s;
+  padding-bottom: 100px;
 }
 
 .visible .todoApp {
