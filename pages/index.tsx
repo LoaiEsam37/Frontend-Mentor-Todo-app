@@ -19,6 +19,7 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [todoList, setTodoList] = useState<Task[]>([]);
   const [animation, setAnimation] = useState(false);
+  const [filter, setFilter] = useState(1);
   const mounted = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -62,26 +63,19 @@ export default function Home() {
   };
 
   const handleComplete = (uid: string) => {
-    let newTodoList = todoList;
-    newTodoList = newTodoList.map((task) => {
-      if (task.uid === uid) {
-        if (task.completed === false) return { ...task, completed: true };
-        if (task.completed === true) return { ...task, completed: false };
-      }
-      return task;
-    });
-    setTodoList(newTodoList);
+    setTodoList(
+      todoList.map((task) => {
+        if (task.uid === uid) {
+          if (task.completed === false) return { ...task, completed: true };
+          if (task.completed === true) return { ...task, completed: false };
+        }
+        return task;
+      })
+    );
   };
 
   const handleDelete = (uid: string) => {
-    let newTodoList = todoList;
-    newTodoList = newTodoList.filter((task) => {
-      if (task.uid === uid) {
-        return false;
-      }
-      return true;
-    });
-    setTodoList(newTodoList);
+    setTodoList(todoList.filter((task) => task.uid !== uid));
   };
 
   return (
@@ -130,19 +124,60 @@ export default function Home() {
             />
           </div>
           <div className={styles.tasks}>
-            {todoList.map((e) => {
-              return (
-                <div key={e.uid} className={styles.task}>
-                  <span
-                    onClick={() => handleComplete(e.uid)}
-                    className={e.completed ? styles.completed : undefined}
-                  ></span>
-                  <span>{e.task}</span>
-                  <span onClick={() => handleDelete(e.uid)}></span>
-                </div>
-              );
-            })}
-            <div className={styles.toolbar}></div>
+            {todoList
+              .filter((task) => {
+                if (filter === 1) return true;
+                if (filter === 2) return task.completed === false;
+                if (filter === 3) return task.completed === true;
+              })
+              .map((task) => {
+                return (
+                  <div key={task.uid} className={styles.task}>
+                    <span
+                      onClick={() => handleComplete(task.uid)}
+                      className={task.completed ? styles.completed : undefined}
+                    ></span>
+                    <span>{task.task}</span>
+                    <span onClick={() => handleDelete(task.uid)}></span>
+                  </div>
+                );
+              })}
+            <div className={styles.toolbar}>
+              <span className={styles.firstButton}>
+                {todoList.filter((task) => task.completed === false).length}{" "}
+                items left
+              </span>
+              <div>
+                <span
+                  onClick={() => setFilter(1)}
+                  className={filter === 1 ? styles.activeFilter : undefined}
+                >
+                  All
+                </span>
+                <span
+                  onClick={() => setFilter(2)}
+                  className={filter === 2 ? styles.activeFilter : undefined}
+                >
+                  Active
+                </span>
+                <span
+                  onClick={() => setFilter(3)}
+                  className={filter === 3 ? styles.activeFilter : undefined}
+                >
+                  Completed
+                </span>
+              </div>
+              <span
+                className={styles.lastButton}
+                onClick={() => {
+                  setTodoList(
+                    todoList.filter((task) => task.completed === false)
+                  );
+                }}
+              >
+                Clear Completed
+              </span>
+            </div>
           </div>
         </div>
       </main>

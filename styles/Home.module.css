@@ -85,6 +85,13 @@
   overflow: hidden;
 }
 
+.toolbar > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
 .todoApp .header div {
   cursor: pointer;
 }
@@ -143,6 +150,10 @@
   border-color: #37394e;
 }
 
+.toolbar span:not(.firstButton) {
+  cursor: pointer;
+}
+
 .task span:nth-of-type(1) {
   width: 20px;
   height: 20px;
@@ -160,9 +171,17 @@
   color: #797b92;
 }
 
-.task span:nth-of-type(3) {
-  width: 20px;
-  height: 20px;
+.toolbar span.lastButton {
+  margin-right: 20px;
+}
+
+.toolbar span.firstButton {
+  margin-left: 20px;
+}
+
+.task:hover span:nth-of-type(3) {
+  width: 15px;
+  height: 15px;
   position: absolute;
   right: 20px;
   top: 50%;
@@ -175,6 +194,21 @@
 
 .darkMode .task span:nth-of-type(1) {
   border-color: #303247;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 15px 0;
+  color: #9a9a9c;
+  font-size: 15px;
+}
+
+.darkMode .toolbar {
+  background-color: #25273c;
+  color: #5d5e7c;
 }
 
 .task span:nth-of-type(1).completed {
@@ -192,4 +226,8 @@
   background-repeat: no-repeat;
   width: 10px;
   height: 10px;
+}
+
+.activeFilter {
+  color: #4071ce;
 }
