@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .main.darkMode {
@@ -28,6 +28,12 @@
   background-image: url("../public/bg-desktop-light.jpg");
   background-size: cover;
   background-repeat: no-repeat;
+  transition: 2s;
+  filter: blur(3px);
+}
+
+.main.visible::before {
+  filter: blur(0);
 }
 
 .main.darkMode::before {
@@ -40,6 +46,16 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  transform: translateY(-10%);
+  filter: blur(5px);
+  transition: 2s;
+}
+
+.visible .todoApp {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
 }
 
 .todoApp .header {
@@ -49,7 +65,7 @@
 
 .todoApp .header h1 {
   text-transform: uppercase;
-  letter-spacing: .4em;
+  letter-spacing: 0.4em;
   font-weight: 700;
   color: #fff;
 }
@@ -144,6 +160,19 @@
   color: #797b92;
 }
 
+.task span:nth-of-type(3) {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background-image: url("../public/icon-cross.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .darkMode .task span:nth-of-type(1) {
   border-color: #303247;
 }
@@ -151,7 +180,6 @@
 .task span:nth-of-type(1).completed {
   background-image: linear-gradient(-45deg, #aa77f6, #6dbdfa);
 }
-
 
 .task span:nth-of-type(1).completed::before {
   content: "";
@@ -164,17 +192,4 @@
   background-repeat: no-repeat;
   width: 10px;
   height: 10px;
-} 
-
-.task span:nth-of-type(3) {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  background-image: url("../public/icon-cross.svg");
-  background-size: cover;
-  background-repeat: no-repeat;
 }

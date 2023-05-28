@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
@@ -18,10 +18,11 @@ export default function Home() {
 
   const [darkMode, setDarkMode] = useState(false);
   const [todoList, setTodoList] = useState<Task[]>([]);
+  const [animation, setAnimation] = useState(false);
   const mounted = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const savedMode = Cookies.get("darkMode");
     if (savedMode) {
       setDarkMode(
@@ -30,11 +31,14 @@ export default function Home() {
         ) === "true"
       );
     }
-    inputRef.current && inputRef.current.focus();
+    setTimeout(() => {
+      inputRef.current && inputRef.current.focus();
+    }, 2300);
   }, []);
 
   useEffect(() => {
     if (mounted.current) {
+      setAnimation(true);
       Cookies.set(
         "darkMode",
         CryptoJS.AES.encrypt(darkMode.toString(), secretKey).toString()
@@ -88,7 +92,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon-32x32.png" />
       </Head>
-      <main className={`${styles.main} ${darkMode && styles.darkMode}`}>
+      <main
+        className={`${styles.main} ${darkMode && styles.darkMode} ${
+          animation && styles.visible
+        }`}
+      >
         <div className={styles.todoApp}>
           <header className={styles.header}>
             <h1>todo</h1>
