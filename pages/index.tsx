@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
@@ -18,23 +18,30 @@ export default function Home() {
 
   const [darkMode, setDarkMode] = useState(false);
   const [todoList, setTodoList] = useState<Task[]>([]);
+  const mounted = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const savedMode = Cookies.get("darkMode");
     if (savedMode) {
       setDarkMode(
-        Boolean(
-          CryptoJS.AES.decrypt(savedMode, secretKey).toString(CryptoJS.enc.Utf8)
-        )
+        CryptoJS.AES.decrypt(savedMode, secretKey).toString(
+          CryptoJS.enc.Utf8
+        ) === "true"
       );
     }
+    inputRef.current && inputRef.current.focus();
   }, []);
 
   useEffect(() => {
-    Cookies.set(
-      "darkMode",
-      CryptoJS.AES.encrypt(darkMode.toString(), secretKey).toString()
-    );
+    if (mounted.current) {
+      Cookies.set(
+        "darkMode",
+        CryptoJS.AES.encrypt(darkMode.toString(), secretKey).toString()
+      );
+    } else {
+      mounted.current = true;
+    }
   }, [darkMode]);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -54,7 +61,8 @@ export default function Home() {
     let newTodoList = todoList;
     newTodoList = newTodoList.map((task) => {
       if (task.uid === uid) {
-        return { ...task, completed: true };
+        if (task.completed === false) return { ...task, completed: true };
+        if (task.completed === true) return { ...task, completed: false };
       }
       return task;
     });
@@ -82,9 +90,14 @@ export default function Home() {
       </Head>
       <main className={`${styles.main} ${darkMode && styles.darkMode}`}>
         <div className={styles.todoApp}>
-          <div>
+          <header className={styles.header}>
             <h1>todo</h1>
-            <div onClick={() => setDarkMode(!darkMode)}>
+            <div
+              onClick={() => {
+                setDarkMode(!darkMode);
+                inputRef.current && inputRef.current.focus();
+              }}
+            >
               <Image
                 src={darkMode ? "/icon-sun.svg" : "/icon-moon.svg"}
                 alt={"moon icon"}
@@ -92,24 +105,36 @@ export default function Home() {
                 height={25}
               />
             </div>
-          </div>
-          <div>
+          </header>
+          <div
+            className={styles.createTask}
+            onClick={() => inputRef.current && inputRef.current.focus()}
+          >
             <input
               type="text"
               placeholder="Create a new todo..."
               onKeyDown={handleKeyPress}
+              ref={inputRef}
+              onChange={(e) => {
+                if (e.target.value.length > 55)
+                  e.target.value = e.target.value.slice(0, 55);
+              }}
             />
           </div>
           <div className={styles.tasks}>
             {todoList.map((e) => {
               return (
-                <div key={e.uid}>
-                  <div onClick={() => handleComplete(e.uid)}></div>
+                <div key={e.uid} className={styles.task}>
+                  <span
+                    onClick={() => handleComplete(e.uid)}
+                    className={e.completed ? styles.completed : undefined}
+                  ></span>
                   <span>{e.task}</span>
-                  <div onClick={() => handleDelete(e.uid)}></div>
+                  <span onClick={() => handleDelete(e.uid)}></span>
                 </div>
               );
             })}
+            <div className={styles.toolbar}></div>
           </div>
         </div>
       </main>

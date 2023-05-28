@@ -42,58 +42,58 @@
   flex-direction: column;
 }
 
-.todoApp div:nth-of-type(1) {
+.todoApp .header {
   display: flex;
   justify-content: space-between;
 }
 
-.todoApp div:nth-of-type(1) h1 {
+.todoApp .header h1 {
   text-transform: uppercase;
   letter-spacing: .4em;
   font-weight: 700;
   color: #fff;
 }
 
-.todoApp div:nth-of-type(2) {
+.todoApp .createTask {
   position: relative;
   padding: 15px 20px 15px 60px;
   background-color: #fff;
   border-radius: 5px;
   margin-top: 30px;
-}
-
-.todoApp .tasks {
-  margin-top: 30px;
-}
-
-.todoApp .tasks div {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  background-color: #fff;
-  border-bottom: 1px solid #e6e5ea;
-}
-
-.todoApp div:nth-of-type(1) div {
   cursor: pointer;
 }
 
-.darkMode .todoApp div:nth-of-type(2) {
+.todoApp .tasks {
+  margin-top: 25px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.todoApp .header div {
+  cursor: pointer;
+}
+
+.darkMode .todoApp .createTask {
   background-color: #25273c;
 }
 
-.todoApp div:nth-of-type(2) input {
+.todoApp .createTask input {
   border: none;
   outline: none;
   width: 100%;
   background-color: transparent;
+  font-size: 15px;
 }
 
-.darkMode .todoApp div:nth-of-type(2) input {
+.darkMode .todoApp .createTask input::placeholder {
   color: #797b92;
 }
 
-.todoApp div:nth-of-type(2)::before {
+.darkMode .todoApp .createTask input {
+  color: #c3c5dc;
+}
+
+.todoApp .createTask::before {
   content: "";
   position: absolute;
   width: 20px;
@@ -105,7 +105,76 @@
   left: 20px;
 }
 
-.darkMode .todoApp div:nth-of-type(2)::before {
+.darkMode .todoApp .createTask::before {
   border-color: #303247;
 }
 
+.task {
+  background-color: #fff;
+  padding: 15px 20px 15px 60px;
+  display: flex;
+  justify-content: flex-start;
+  color: #4c4b59;
+  position: relative;
+  font-size: 15px;
+  border-bottom: 1px solid #e6e5ea;
+  align-items: center;
+}
+
+.darkMode .task {
+  background-color: #25273c !important;
+  color: #c3c5dc;
+  border-color: #37394e;
+}
+
+.task span:nth-of-type(1) {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ededef;
+  border-radius: 50%;
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.task .completed + span {
+  text-decoration: line-through;
+  color: #797b92;
+}
+
+.darkMode .task span:nth-of-type(1) {
+  border-color: #303247;
+}
+
+.task span:nth-of-type(1).completed {
+  background-image: linear-gradient(-45deg, #aa77f6, #6dbdfa);
+}
+
+
+.task span:nth-of-type(1).completed::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 5px;
+  transform: translateX(-50%);
+  background-image: url("../public/icon-check.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 10px;
+  height: 10px;
+} 
+
+.task span:nth-of-type(3) {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background-image: url("../public/icon-cross.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
