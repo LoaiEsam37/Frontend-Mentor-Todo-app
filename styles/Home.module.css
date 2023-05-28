@@ -1,22 +1,18 @@
 .main {
   width: 100vw;
   height: 100vh;
+  overflow-y: auto;
   background-color: #fafafa;
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   transition: 0.2s;
+  padding-top: 100px;
 }
 
 .main.darkMode {
-  width: 100vw;
-  height: 100vh;
   background-color: #181824;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .main::before {
@@ -82,7 +78,6 @@
 .todoApp .tasks {
   margin-top: 25px;
   border-radius: 5px;
-  overflow: hidden;
 }
 
 .toolbar > div {
