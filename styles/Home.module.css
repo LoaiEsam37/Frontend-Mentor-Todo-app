@@ -25,7 +25,6 @@
   background-image: url("../public/bg-desktop-light.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  filter: blur(3px);
 }
 
 .main::after {
@@ -37,10 +36,6 @@
   top: 570px;
   transform: translateX(-50%);
   color: #919096;
-}
-
-.main.visible::before {
-  filter: blur(0);
 }
 
 .main.darkMode::before {
