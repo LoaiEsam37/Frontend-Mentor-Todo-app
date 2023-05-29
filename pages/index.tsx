@@ -30,7 +30,6 @@ export default function Home() {
   const [filter, setFilter] = useState(1);
 
   const mounted = useRef(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setAnimation(true);
@@ -46,10 +45,6 @@ export default function Home() {
     if (typeof window !== "undefined") {
       setIsBrowser(true);
     }
-
-    setTimeout(() => {
-      inputRef.current && inputRef.current.focus();
-    }, 2300);
   }, []);
 
   useEffect(() => {
@@ -143,7 +138,6 @@ export default function Home() {
               type="text"
               placeholder="Create a new todo..."
               onKeyDown={handleKeyPress}
-              ref={inputRef}
               onChange={(e) => {
                 if (e.target.value.length > 32)
                   e.target.value = e.target.value.slice(0, 32);
