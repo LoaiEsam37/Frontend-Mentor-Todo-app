@@ -11,6 +11,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import styles from "@/styles/Home.module.css";
+import { useRouter } from "next/router";
 
 export default function Home() {
   interface Task {
@@ -27,10 +28,12 @@ export default function Home() {
   const [animation, setAnimation] = useState(false);
   const [isBrowser, setIsBrowser] = useState(false);
   const [filter, setFilter] = useState(1);
+
   const mounted = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    setAnimation(true);
     const savedMode = Cookies.get("darkMode");
     if (savedMode) {
       setDarkMode(
@@ -51,7 +54,6 @@ export default function Home() {
 
   useEffect(() => {
     if (mounted.current) {
-      setAnimation(true);
       Cookies.set(
         "darkMode",
         CryptoJS.AES.encrypt(darkMode.toString(), secretKey).toString(),
