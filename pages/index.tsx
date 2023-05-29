@@ -119,7 +119,6 @@ export default function Home() {
             <div
               onClick={() => {
                 setDarkMode(!darkMode);
-                inputRef.current && inputRef.current.focus();
               }}
             >
               <Image
