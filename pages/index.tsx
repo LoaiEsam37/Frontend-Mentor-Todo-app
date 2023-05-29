@@ -4,6 +4,12 @@ import Image from "next/image";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import { v4 as uuidv4 } from "uuid";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
 import styles from "@/styles/Home.module.css";
 
 export default function Home() {
@@ -19,6 +25,7 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [todoList, setTodoList] = useState<Task[]>([]);
   const [animation, setAnimation] = useState(false);
+  const [isBrowser, setIsBrowser] = useState(false);
   const [filter, setFilter] = useState(1);
   const mounted = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,6 +39,11 @@ export default function Home() {
         ) === "true"
       );
     }
+
+    if (typeof window !== "undefined") {
+      setIsBrowser(true);
+    }
+
     setTimeout(() => {
       inputRef.current && inputRef.current.focus();
     }, 2300);
@@ -83,7 +95,7 @@ export default function Home() {
     setTodoList(todoList.filter((task) => task.uid !== uid));
   };
 
-  function handleDragEnd(result) {
+  function handleDragEnd(result: DropResult) {
     if (!result.destination) return;
     const items = Array.from(todoList);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -138,24 +150,48 @@ export default function Home() {
           </div>
 
           <div className={styles.tasks}>
-            <div>
-              {todoList
-                .filter((task) => {
-                  if (filter === 1) return true;
-                  if (filter === 2) return task.completed === false;
-                  if (filter === 3) return task.completed === true;
-                })
-                .map(({ task, uid, completed }) => (
-                  <div className={styles.task} key={uid}>
-                    <span
-                      onClick={() => handleComplete(uid)}
-                      className={completed ? styles.completed : undefined}
-                    ></span>
-                    <span>{task}</span>
-                    <span onClick={() => handleDelete(uid)}></span>
-                  </div>
-                ))}
-            </div>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              {isBrowser ? (
+                <Droppable droppableId="tasks">
+                  {(provided) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className={styles.droppable}
+                    >
+                      {todoList
+                        .filter((task) => {
+                          if (filter === 1) return true;
+                          if (filter === 2) return task.completed === false;
+                          if (filter === 3) return task.completed === true;
+                        })
+                        .map(({ task, uid, completed }, index) => (
+                          <Draggable key={uid} draggableId={uid} index={index}>
+                            {(provided) => (
+                              <div
+                                className={styles.task}
+                                {...provided.dragHandleProps}
+                                {...provided.draggableProps}
+                                ref={provided.innerRef}
+                              >
+                                <span
+                                  onClick={() => handleComplete(uid)}
+                                  className={
+                                    completed ? styles.completed : undefined
+                                  }
+                                ></span>
+                                <span>{task}</span>
+                                <span onClick={() => handleDelete(uid)}></span>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              ) : null}
+            </DragDropContext>
             <div className={styles.toolbar}>
               <span className={styles.firstButton}>
                 {todoList.filter((task) => task.completed === false).length}{" "}

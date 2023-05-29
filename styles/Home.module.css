@@ -1,6 +1,7 @@
 .main {
   width: 100vw;
   height: 100vh;
+  overflow-x: hidden;
   overflow-y: auto;
   background-color: #fafafa;
   position: relative;
@@ -88,7 +89,6 @@
 .todoApp .tasks {
   margin-top: 25px;
   border-radius: 5px;
-  overflow: hidden;
   box-shadow: 0 30px 25px 0 #eee;
 }
 
@@ -101,6 +101,16 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+}
+
+.droppable > div {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.tasks > div {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .todoApp .header div {
@@ -153,6 +163,8 @@
   font-size: 15px;
   border-bottom: 1px solid #e6e5ea;
   align-items: center;
+  top: auto !important;
+  left: auto !important;
 }
 
 .darkMode .task {
@@ -215,6 +227,7 @@
   padding: 15px 0;
   color: #9a9a9c;
   font-size: 15px;
+  border-radius: 0 0 5px 5px;
 }
 
 .darkMode .toolbar {
