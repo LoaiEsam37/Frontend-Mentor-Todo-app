@@ -88,6 +88,12 @@
 .todoApp .tasks {
   margin-top: 25px;
   border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 30px 25px 0 #eee;
+}
+
+.darkMode .todoApp .tasks {
+  box-shadow: 0 30px 25px 0 #101119;
 }
 
 .toolbar > div {
